@@ -11,9 +11,23 @@ Reply in the user's language, including questions, preview instructions, progres
 
 ## Start from the product screen
 
-Find the product repository, its contribution instructions, working tree, index, Storybook setup, and the actual entry point for the requested screen. Use labels or navigation paths to resolve ambiguity. For a new design task, branch from the latest remote base specified by the project. For a returning task, recover the existing branch, preview, and last accepted change from local task notes. Preserve unrelated work.
+Find the product repository, its contribution instructions, working tree, index, Storybook setup, and the actual entry point for the requested screen. Use labels or navigation paths to resolve ambiguity. For a returning task, recover its work branch, preview, and last accepted change from local task notes.
 
 A request to discuss an idea calls for a discussion. A request to see the current screen authorizes preparing a preview. If the target and intent are clear, proceed directly. When two screens fit the description, ask which one the designer uses.
+
+### Check the team branch before development
+
+- At the start of development, when resuming, and before each new round of edits, fetch the project's designated remote base (for example, `origin/develop` or `origin/main`). Identify the base from the task's existing PR or the project's contribution rules. If the target is ambiguous, ask which branch the team uses. If fetching fails, tell the designer that you could not verify the latest version and preserve the current work.
+- Compare the fetched commit to the current task tip by ancestry. For a new task, compare against the local base it would start from, if one exists. If that tip already includes the fetched commit, proceed quietly. If it is missing upstream changes, explain what changed for the screen and ask whether to update now or keep working on this version. Wait for the answer. If deferred, record the base branch and fetched commit in the local task notes so repeated checks do not ask about the same update. Offer again when the base advances or the designer asks.
+- For a new task, create a separate work branch from the agreed base before editing. Use the fetched base when starting fresh. For an existing task, rebase its work branch onto the exact fetched commit only after approval. Keep the pre-update tip recoverable and preserve pending edits, the index, and local previews. If the work cannot be isolated safely or a Git operation is in progress, pause before starting another. The separate delivery confirmation still governs publication.
+
+### Resolve conflicts by their effect on the product
+
+Compare the upstream change, the task change, and the design and business rules in the task notes. A conflict is minor when both intentions can be preserved unambiguously, such as reapplying accepted spacing after a component was renamed. Resolve those conflicts and continue the rebase without interrupting the designer.
+
+If the two versions disagree about an accepted interaction, a permission, a data change, or another product rule, even a one-line conflict is significant. Pause, describe what the designer would see under each definition, and ask whether to adopt the upstream definition **for that specific part** or cancel the update and keep the pre-update work. Only drop the identified local behavior with explicit approval. Preserve independent design edits, even in the same file or commit. Refer unresolved business policy to engineering.
+
+Compare the rebased result with the agreed rules even when Git reports no conflict. If that check reveals a behavior change, give the designer the same choice before replacing the accepted definition in the task notes. If they cancel, abort the in-progress rebase or return the task safely to its saved pre-update state. Refresh the notes and preview for the chosen version and ask for visual acceptance again if the experience changed.
 
 ## Give the designer a working preview
 
@@ -50,6 +64,6 @@ Preserve existing permissions, API contracts, data writes, and business rules. S
 
 ## Hand off for engineering review
 
-1. **Prepare locally.** On a handoff request, update from the base and organize local commits as needed (rebase, squash, reword). Preserve shared history. After integration, compare the final production diff against the relevant business rules in the task notes. If resolving a conflict changes the accepted experience, return to the designer for visual acceptance. Route conflicts about business behavior to engineering. Run relevant checks and inspect the diff and outgoing commits for local-only material.
+1. **Prepare locally.** On a handoff request, run the same base check and honor any deferred update. If the project requires an up-to-date branch to proceed, explain that requirement and ask before rebasing. Organize local commits as needed (squash or reword) and preserve shared history. Compare the final production diff against the agreed business rules. Run relevant checks and inspect the diff and outgoing commits for local-only material.
 2. **Ask once for the proposed delivery.** Summarize what will be sent and the check results. Name the current and proposed branch (or say the current name will be kept), the destination repository and base branch, and the title of the new PR or the existing PR to update. Ask whether to carry out those specific actions now. Even an initial request to rename, push, and open a PR starts this confirmation step. Wait for a separate, explicit affirmative reply. While waiting, keep the branch name unchanged, the commits local, and any draft or existing PR untouched.
 3. **Carry out what was approved.** A single affirmative reply covers the actions shown together. If the designer defers or approves only part, respect that scope. Pushing to an open PR's head branch updates that PR too, so include that effect in the proposal. If the changes to deliver, destination, branch name, or PR action changes materially, present the revised proposal for approval. This gate also applies to later pushes to an existing PR. Before retrying an approved action, check the current branch, remote, and PR so a partial success is not repeated. Describe the accepted experience, actual check results, and technical review points in the PR. Include visual evidence when requested. Return the link and leave review and merge to engineering.
